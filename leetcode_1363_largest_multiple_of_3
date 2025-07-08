@@ -1,0 +1,46 @@
+class Solution {
+public:
+    string largestMultipleOfThree(vector<int>& digits) {
+        // Result string to store the final number
+        string res = "";
+
+        // Digits to remove (in priority order) when sum % 3 == 1 or 2
+        // These are sorted to remove the smallest possible digit(s) first
+        int m1[] = {1, 4, 7, 2, 5, 8};  // For sum % 3 == 1
+        int m2[] = {2, 5, 8, 1, 4, 7};  // For sum % 3 == 2
+
+        int sum = 0;           // Sum of all digits
+        int ds[10] = {0};      // Count of each digit from 0 to 9
+
+        // Count digits and calculate the total sum
+        for (auto d : digits) {
+            ds[d]++;
+            sum += d;
+        }
+
+        // If sum is not divisible by 3, try to fix it
+        while (sum % 3 != 0) {
+            // Choose correct set of digits to remove from (m1 or m2)
+            for (auto i : (sum % 3 == 1 ? m1 : m2)) {
+                if (ds[i] > 0) {
+                    // Remove one occurrence of digit i
+                    --ds[i];
+                    sum -= i;
+                    break;  // exit after removing one digit
+                }
+            }
+            // Loop again only if sum still not divisible by 3
+        }
+
+        // Build the result number in descending order for largest value
+        for (int i = 9; i >= 0; --i) {
+            // Append digit 'i' as character, ds[i] times
+            res += string(ds[i], '0' + i);
+        }
+
+        // Special case: if result is all zeros (like "000"), return "0"
+        if (res.size() && res[0] == '0') return "0";
+
+        return res;
+    }
+};
