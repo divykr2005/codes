@@ -1,0 +1,30 @@
+class Solution {
+public:
+    int numPairsDivisibleBy60(vector<int>& time) {
+        // Frequency array to count how many times each remainder (0 to 59) has occurred so far
+        vector<int> count(60, 0);
+
+        // This will store the total number of valid pairs
+        int result = 0;
+
+        // Loop over each song duration
+        for (int t : time) {
+            // Compute remainder of current time when divided by 60
+            int rem = t % 60;
+
+            // Find the complement remainder that, when added to 'rem', gives a multiple of 60
+            // Using % 60 ensures we correctly handle the case where rem == 0
+            int complement = (60 - rem) % 60;
+
+            // Add to result the number of previously seen songs that had the complement remainder
+            // These form valid pairs with the current song
+            result += count[complement];
+
+            // Record the current remainder for future pairings
+            count[rem]++;
+        }
+
+        // Return total number of valid pairs
+        return result;
+    }
+};
