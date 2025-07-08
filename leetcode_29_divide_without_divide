@@ -1,0 +1,80 @@
+class Solution {
+public:
+    int divide(int dividend, int divisor) {
+        // Special case: if divisor is INT_MIN
+        if (divisor == INT_MIN) {
+            if (dividend == INT_MIN) {
+                return 1; // Only possible division is INT_MIN / INT_MIN = 1
+            } else {
+                return 0; // All other values divided by INT_MIN will be zero
+            }
+        }
+
+        // Special case: if dividend is INT_MIN
+        if (dividend == INT_MIN) {
+            // Handle overflow case: INT_MIN / -1 exceeds 32-bit signed int
+            if (divisor == -1) {
+                return INT_MAX;
+            }
+
+            // Adjust dividend to prevent overflow and make recursion safe
+            if (divisor > 0) {
+                // Since dividend is negative and divisor is positive,
+                // we add divisor once and recur
+                return -1 + divide(dividend + divisor, divisor);
+            } else {
+                // If both dividend and divisor are negative, subtract divisor once and recur
+                return 1 + divide(dividend - divisor, divisor);
+            }
+        }
+
+        // Determine the sign of the result
+        int sign = 1;
+        if ((dividend > 0 && divisor < 0) || (dividend < 0 && divisor > 0)) {
+            sign = -1;
+        }
+
+        // Convert both dividend and divisor to positive (safe here because dividend != INT_MIN)
+        dividend = dividend > 0 ? dividend : -dividend;
+        divisor = divisor > 0 ? divisor : -divisor;
+
+        int remainder = dividend; // Remainder to reduce in the loop
+        int quotient = 0;         // Final answer
+
+        // Use bit shifting to subtract the largest multiples of divisor
+        while (remainder >= divisor) {
+            int shift = 0;
+
+            // Find the largest power such that (divisor << shift) <= remainder
+            // and also check (divisor << shift) > 0 to prevent overflow
+            while ((divisor << shift) <= remainder && (divisor << shift) > 0) {
+                ++shift;
+            }
+
+            --shift; // Go back one step as last shift exceeded remainder
+
+            quotient += (1 << shift);              // Add 2^shift to quotient
+            remainder -= (divisor << shift);       // Subtract that chunk from remainder
+        }
+
+        // Apply the sign
+        if (sign < 0) quotient = -quotient;
+
+        return quotient;
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
