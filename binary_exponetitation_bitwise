@@ -1,0 +1,16 @@
+typedef long long ll;
+
+ll mod_pow(ll base, ll exp, ll mod) {
+    ll result = 1;
+    base %= mod;  // Reduce base first
+
+    while (exp > 0) {
+        if (exp & 1)           // If current bit is 1
+            result = (result * base) % mod;
+
+        base = (base * base) % mod;  // Square the base
+        exp >>= 1;                   // Shift right (divide by 2)
+    }
+
+    return result;
+}
