@@ -1,0 +1,27 @@
+int divide(int A, int B) {
+    // Handle the special case where the result would overflow 32-bit signed int
+    if (A == INT_MIN && B == -1) return INT_MAX;
+
+    // Work with absolute values to simplify logic
+    int a = abs(A);
+    int b = abs(B);
+    int res = 0;  // Final result (quotient)
+    int x = 0;    // Temporary shift count
+
+    // Loop while the dividend (a) is still greater than or equal to divisor (b)
+    while (a - b >= 0) {
+        // Find the largest shift x such that (b << (x + 1)) <= a
+        // This gives us the largest chunk of b we can subtract from a
+        for (x = 0; a - (b << (x + 1)) >= 0; x++);
+        
+        // Add 2^x to the result (equivalent to adding (1 << x) times b)
+        res += 1 << x;
+
+        // Subtract b * 2^x from a
+        a -= b << x;
+    }
+
+    // Apply the correct sign to the result
+    // If A and B have the same sign, result is positive; else negative
+    return (A > 0) == (B > 0) ? res : -res;
+}
