@@ -1,0 +1,33 @@
+class Solution {
+public:
+    // Function to compute sum of all divisors of a number using prime factorization
+    long long sumOfDivisors(int n) {
+        long long ans = 1; // Start with 1 since product starts with neutral element
+        int original = n;  // Store original value for reference (not used further)
+
+        // Loop through possible prime factors from 2 to sqrt(n)
+        for (int i = 2; i * i <= n; ++i) {
+            if (n % i == 0) {
+                long long sum = 1;   // Geometric sum for this prime factor
+                long long term = 1;  // Tracks current power of prime factor (i^k)
+
+                // While i divides n, calculate i^1 + i^2 + ... + i^e
+                while (n % i == 0) {
+                    n /= i;          // Reduce n by dividing by prime factor
+                    term *= i;       // Raise power (i^1, i^2, ...)
+                    sum += term;     // Add current power to the sum
+                }
+
+                ans *= sum; // Multiply the result with this prime's divisor sum
+            }
+        }
+
+        // If n is still greater than 1, it is a prime > sqrt(original n)
+        // So we add its contribution: (1 + n)
+        if (n > 1) {
+            ans *= (1 + n);
+        }
+
+        return ans; // Return the final sum of divisors
+    }
+};
